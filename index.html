@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+    <head>
+        <title>PokeFame</title>
+    </head>
+    <body>
+        <h3>PokeFame</h3>
+        <div id="strm" style="border:1px dotted black;">
+            -
+        </div>
+        <br>
+        <input type="button" onClick="png()" value="Test"></input>
+
+        <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+
+        <script>
+            var socket=io();
+            function png(){
+                socket.emit("test","Hello");
+                return false;
+            };
+            </script>
+    </body>
+</html>

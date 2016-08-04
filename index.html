@@ -2,10 +2,25 @@
 <html>
     <head>
         <title>PokeFame</title>
+        <meta content="width=device-width, inital-scale=1">
+        <style>
+            .disp{
+                border:1px dashed black;
+                background-color: lightgray;
+                align-content: left;
+                margin: 1%;
+                width: 90%;
+                height: 50%;
+            }
+        </style>
     </head>
     <body>
         <h3>PokeFame</h3>
-        <div id="strm" style="border:1px dotted black;">
+        <div class="disp" id="strm">
+            -
+        </div>
+        <br>
+        <div class="disp" id="twt">
             -
         </div>
         <br>
@@ -20,6 +35,11 @@
                 socket.emit("test","Hello");
                 return false;
             };
+            socket.on("updte",function(tweet){
+                $("#strm").append("Name: "+tweet.user.screen_name);
+                $("#twt").append("<br><br>Piece of wisdom:"+tweet.text);
+                console.log(tweet.user.screen_name);
+            });
             </script>
     </body>
 </html>

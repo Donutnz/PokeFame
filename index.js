@@ -8,6 +8,7 @@ app.get("/",function(req,res){
 
 io.on("connection",function(socket){
     console.log("A user connected");
+    //socket.emit("updte",ltst);
     socket.on("test",function(msg){
         console.log(msg);
     });
@@ -15,4 +16,26 @@ io.on("connection",function(socket){
 
 http.listen(3000,function(){
     console.log("Listening on *:3000");
+});
+
+//Twitter stuff beyond this point.
+
+var Twit=require("twit");
+var toauth=require("./TCreds.js");
+var tpics=["#pokemon","#pokemongo","#Pokemon","#PokemonGo"];
+
+var T=new Twit(toauth);
+
+var filters={
+    track:tpics,
+    language:"en"
+};
+
+var stream=T.stream("statuses/filter",filters);
+
+stream.on("tweet",function(tweet){
+    //ltst=tweet;
+    io.sockets.emit("updte",tweet)
+    console.log(tweet.user.screen_name);
+    console.log("---");
 });

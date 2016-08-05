@@ -1,6 +1,7 @@
 var app=require("express")();
-var http=require("http").Server(app);
+var http=require("http").createServer(app);
 var io=require("socket.io")(http);
+var port=process.env.PORT||3000;
 
 app.get("/",function(req,res){
     res.sendFile(__dirname+"/index.html");
@@ -14,8 +15,9 @@ io.on("connection",function(socket){
     });
 });
 
-http.listen(3000,function(){
-    console.log("Listening on *:3000");
+http.listen(port,function(){
+    //console.log("Listening on *:3000");
+    console.log("Listening on: "+http.address().address+":"+http.address().port);
 });
 
 //Twitter stuff beyond this point.

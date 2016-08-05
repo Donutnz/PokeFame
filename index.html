@@ -16,6 +16,8 @@
     </head>
     <body>
         <h3>PokeFame</h3>
+        <p>This page is WIP</p>
+        
         <div class="disp" id="strm">
             -
         </div>
@@ -36,8 +38,9 @@
                 return false;
             };
             socket.on("updte",function(tweet){
-                $("#strm").append("Name: "+tweet.user.screen_name);
-                $("#twt").append("<br><br>Piece of wisdom:"+tweet.text);
+                //$("#strm").append("; Name: "+tweet.user.screen_name);
+                //$("#twt").append("<br><br>Piece of wisdom: "+tweet.text);
+                $("#twt").html("Name: "+tweet.user.screen_name+"<br>Post: "+tweet.text);
                 console.log(tweet.user.screen_name);
             });
             </script>

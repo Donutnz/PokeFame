@@ -5,7 +5,7 @@ This is a (hopefully) simple app which designed to rank Pokemon in terms of fame
 the Microsoft Student Accelerator program and designed to be hosted on the Microsoft Azure platform.
 
 ## To Do List
-*. Find pokemon names within tweet
-*. Show more info on pokemon on click with ajax (client side)
-*. Make pretty with sass/bootstrap
-*. Convert to typescript
+1. Find pokemon names within tweet
+2. Show more info on pokemon on click with ajax (client side)
+3. Make pretty with sass/bootstrap
+4. Convert to typescript

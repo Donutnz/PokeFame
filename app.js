@@ -42,26 +42,6 @@ var filters={
     language:"en"
 };
 
-var teams=require("./teamssearchterms.js");
-
-/*
-var teamM=T.stream("statuses/filter",{track:"#mystic,#teammystic,#teamMystic,#TeamMystic,#Mystic,#Teammystic",language:"en"});
-var teamV=T.stream("statuses/filter",{track:"#valor,#teamvalor",language:"en"});
-var teamI=T.stream("statuses/filter",{track:"#instinct,#teaminstinct",language:"en"});
-*/
-
-poke.names(function(body){
-var pokemon=body;
-
-var pokefilters={
-    track:pokemon
-}
-/*
-var jsonString=function(callback){fs.readFileSync("./pokefiles/pokereg.json",function(err,data){
-    callback=JSON.parse(data);
-});}*/
-//    var ipt=JSON.parse(fs.readFileSync("./pokefiles/pokereg.json"));
-
 //Pokereg file loading
 try{
     var pokeval=JSON.parse(fs.readFileSync("./pokefiles/pokereg.json"));
@@ -77,20 +57,52 @@ finally{
     console.log("Loaded...");
 }
 
+var teams=require("./teamssearchterms.js");
+
+/*
+var teamM=T.stream("statuses/filter",{track:"#mystic,#teammystic,#teamMystic,#TeamMystic,#Mystic,#Teammystic",language:"en"});
+var teamV=T.stream("statuses/filter",{track:"#valor,#teamvalor",language:"en"});
+var teamI=T.stream("statuses/filter",{track:"#instinct,#teaminstinct",language:"en"});
+*/
+
+//Get poke names list, main stuff starts here
+
+poke.names(function(pokes,octopokes){
+var pokemon=pokes.concat(octopokes);
+
+var pokefilters={
+    track:pokemon
+}
+/*
+var jsonString=function(callback){fs.readFileSync("./pokefiles/pokereg.json",function(err,data){
+    callback=JSON.parse(data);
+});}*/
+//    var ipt=JSON.parse(fs.readFileSync("./pokefiles/pokereg.json"));
+
+
+
 //var jsonObj=JSON.parse(jsonString);
 
 var stream=T.stream("statuses/filter",pokefilters);
 
 stream.on("tweet",function(tweet){
-    for(var x=0;x<pokemon.length;x++){
+    for(var x=0;x<=pokemon.length;x++){
         if(tweet.text.includes(pokemon[x])){
-            if(pokeval.key[x]!="undefined"){
-                pokeval.key[0].value+=1;
-                console.log(pokeval.key[0].value);
+            if(pokeval[pokes[x]]!=undefined){
+                pokeval[pokes[x]]+=1;
+                if(pokeval[poke[x]]==undefined){
+                    console.log(tweet.user.screen_name+" <-------cheeky bugger");
+                }
+                //console.log(pokeval[pokemon[x]]);
+                /*
+                var pos=pokeval.key.indexOf(pokemon[x]);
+                pokeval.key[pos].value+=1;
+                console.log(pokeval.key[pos].name);*/
             }
             else{
-                pokeval["key"].push({"name":pokemon[x],"value":1});
-                console.log("New one added");
+                //fs.appendFile("./pokefiles/pokereg.json","\n{\n\t\""+pokemon[x]+"\":1\n}");
+                pokeval[pokes[x]]=1;
+                console.log("New one added: "+pokes[x]);
             }
             fs.writeFile("./pokefiles/pokereg.json",JSON.stringify(pokeval));
             //fs.appendFile("./pokefiles/pokereg.json",JSON.stringify({"key":"value"}));

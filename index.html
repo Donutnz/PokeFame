@@ -4,83 +4,93 @@
         <title>PokeFame</title>
         <meta content="width=device-width, inital-scale=1">
         <link rel="stylesheet" href="/style.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     </head>
     <body>
-        <h3>PokeFame</h3>
-        <p>This page is WIP</p>
 
-        <div class="rate">
-            -
+
+        <!--<p id="statdisp" class="stats"></p>-->
+        <!--<div id="statdisp">
+        </div>-->
+
+        <!--<div id="pokelist">
+
+            <button class="sort" data-sort="count">
+                Sort
+            </button>
+            <ul class="list">
+                <li>
+                    temp
+                </li>
+            </ul>
+        </div>-->
+        <div class="container-fluid">
+        <div class="row">
+        <div class="col-xs-0 col-sm-1 col-md-3"></div>
+
+        <div class="col-xs-12 col-sm-10 col-md-6 main">
+            <h3 id="title">PokeFame</h3>
+            <div id="date"></div>            
+
+            <div id="pokelist">
+                <ol class='list-group'>
+                    <li class='list-group-item'></li>
+                </ol>
+            </div>
         </div>
 
-        <div class="disp" id="strm">
-            -
+        <div class="col-xs-0 col-sm-1 col-md-3"></div>
         </div>
-        <br>
-        <div class="disp" id="twt">
-            -
+        <div clas="row">
+            <div class="col-sm-4 footer">
+            This app is hosted on Microsoft Azure
+            </div>
+            <div class="col-sm-4">
+            </div>
+            <div class="col-sm-4 footer" style="text-align:right;">
+            This app is created and maintained by Donutnz.
+            </div>
         </div>
-        <br>
-
-        <div class="counter" id="mystic" style="background-color:blue;">
-            Team Mystic:
         </div>
-        <div class="counter" id="valor" style="background-color:red;">
-            Team Valor:
-        </div>
-        <div class="counter" id="instinct" style="background-color:yellow;">
-            Team Instinct:
-        </div>
-        <br>
-
-        <input type="button" onClick="png()" value="Test"></input>
 
         <script src="https://code.jquery.com/jquery-latest.min.js"></script>
         <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
         <!--<script src="/socket.io/socket.io.js"></script>-->
+        <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.2.0/list.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        
 
 
         <script>
             var socket=io();
+            //var userList=new List("pokelist",{valueNames:["name","count"]});
 
-            var events=0;
-
-            var tsM=0;
-            var tsV=0;
-            var tsI=0;
-
-            function png(){
-                socket.emit("test","Hello");
-                return false;
-            };
-            socket.on("updte",function(tweet){
-                events+=1;
+            socket.on("updte",function(stats){
                 //$("#strm").append("; Name: "+tweet.user.screen_name);
                 //$("#twt").append("<br><br>Piece of wisdom: "+tweet.text);
-                $("#twt").append("---<br>Name: "+tweet.user.screen_name+"<br>Post: "+tweet.text+"<br>Location: "+tweet.user.location+" / "+tweet.coordinates+" / "+tweet.place+"<br>");
-                console.log(tweet.user.screen_name);
+                //$("#twt").html("---<br>Name: "+tweet.user.screen_name+"<br>Post: "+tweet.text+"<br>Location: "+tweet.user.location+" / "+tweet.coordinates+" / "+tweet.place+"<br>");
+                //$("#statdisp").text(stats[0].name+"\n"+stats[1].name+"\n"+stats[2].name+"\n"+stats[3].name+"\n"+stats[4].name);
+                //$("#statdisp").html("1. "+stats[0].name+" - "+stats[0].count+"<br>2. "+stats[1].name+" - "+stats[1].count+"<br>3. "+stats[2].name+" - "+stats[2].count);
+                $("#pokelist").html(listify(stats));
             });
 
-            socket.on("mystic",function(tweet){
-                tsM+=1;
-                $("#mystic").html("Team Mystic: "+tsM);
-            });
+            socket.on("setdate",function(date){
+                $("#date").html("<p class=\"descriptor\">This is a simple app to show how often various Pokemon are mentioned on Twitter. Ranking and mention counts are totals since approximately "+date+" UTC.</p>");
+            })
 
-            socket.on("valor",function(tweet){
-                tsV+=1;
-                $("#valor").html("Team Valor: "+tsV);
-            });
-
-            socket.on("instinct",function(tweet){
-                tsI+=1;
-                $("#instinct").html("Team Instinct: "+tsI);
-            });
-
-            setInterval(ups,1000)
-
-            function ups(){
-                $(".rate").html(events+"Tps");
-                events=0;
+            function listify(statset){
+                var sorted=[];
+                for(var x=0;x<statset.length;x++){
+                    //sorted[x]="<li><h3 class=\'name\'>"+statset[x].name+"</h3><p class=\'count\'>"+statset[x].count+"</p></li>";
+                    var indate=new Date(statset[x].date);
+                    var fixtime=indate.getUTCHours()+":"+indate.getUTCMinutes();
+                    var fixdate=fixtime+" "+indate.getUTCDate()+"/"+(indate.getUTCMonth()+1)+"/"+indate.getUTCFullYear();
+                    var dispdate="<div class=\"date\">Latest tweet: "+fixdate+"</div>";
+                    sorted[x]="<li class=\'list-group-item well-sm entry\'><a href=\"bulbapedia.bulbagarden.net/wiki/"+statset[x].name+"_(Pokémon)\">"+statset[x].name+"</a><span class=\"badge\">"+statset[x].count+"</span>"+dispdate+"</li>";
+                };
+                //sorted="<button class=\'sort\' data-sort=\'name\'>Sort</button><ul class=\'list\'>"+sorted+"</ul>";
+                sorted="<ol class=\'list-group actuallist\'>"+sorted.join("")+"</ol>";
+                return sorted;
             }
             </script>
 

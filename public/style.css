@@ -1,16 +1,25 @@
-.disp{
-    border:1px dashed black;
-    background-color: lightgray;
-    align-content: left;
-    margin: 1%;
-    width: 90%;
-    height: 50%;
-    }
-.counter{
+#title{
+    text-align:center;
+}
+.actuallist{
     border:1px solid black;
-    width: 25%;
-    }
-.rate{
-    border:1px solid black;
-    font:bold;
+    background-color: palegreen;
+    border-radius: 15px;
+}
+.entry{
+    margin:10px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+}
+.descriptor{
+    text-align: justify;
+
+}
+.footer{
+    font-size: 10px;
+}
+.date{
+    font-weight: lighter;
+    font-style: italic;
+    font-size: 12px;
 }

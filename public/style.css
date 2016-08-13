@@ -1,0 +1,16 @@
+.disp{
+    border:1px dashed black;
+    background-color: lightgray;
+    align-content: left;
+    margin: 1%;
+    width: 90%;
+    height: 50%;
+    }
+.counter{
+    border:1px solid black;
+    width: 25%;
+    }
+.rate{
+    border:1px solid black;
+    font:bold;
+}

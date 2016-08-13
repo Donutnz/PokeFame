@@ -86,7 +86,7 @@
                     var fixtime=indate.getUTCHours()+":"+indate.getUTCMinutes();
                     var fixdate=fixtime+" "+indate.getUTCDate()+"/"+(indate.getUTCMonth()+1)+"/"+indate.getUTCFullYear();
                     var dispdate="<div class=\"date\">Latest tweet: "+fixdate+"</div>";
-                    sorted[x]="<li class=\'list-group-item well-sm entry\'><a href=\"bulbapedia.bulbagarden.net/wiki/"+statset[x].name+"_(Pokémon)\">"+statset[x].name+"</a><span class=\"badge\">"+statset[x].count+"</span>"+dispdate+"</li>";
+                    sorted[x]="<li class=\'list-group-item well-sm entry\'><a href=\"bulbapedia.bulbagarden.net/wiki/"+statset[x].name+"_(Pokemon)\">"+statset[x].name+"</a><span class=\"badge\">"+statset[x].count+"</span>"+dispdate+"</li>";
                 };
                 //sorted="<button class=\'sort\' data-sort=\'name\'>Sort</button><ul class=\'list\'>"+sorted+"</ul>";
                 sorted="<ol class=\'list-group actuallist\'>"+sorted.join("")+"</ol>";

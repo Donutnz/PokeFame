@@ -1,4 +1,4 @@
-//deprecated, not in use
+//Module to get Pokemon data, either from file or api. Warning: API blocked when last check due to cloudflare/ddos.
 var exports=module.exports={};
 
 var request=require("request");

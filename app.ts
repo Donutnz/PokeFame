@@ -46,10 +46,21 @@ catch(err){
     console.log("Made new reg file");
 }
 finally{
-    console.log("Loaded...");
+    console.log("Loaded reg...");
 }
 
-var ranks=[];
+//Pokerank file loading
+try{
+    var ranks=JSON.parse(fs.readFileSync("./pokefiles/pokeranks.json"));
+    console.log("Found local ranks file...");
+}
+catch(err){
+    var ranks=[];
+    console.log("Had to make new ranks...");
+}
+finally{
+    console.log("Loaded ranks...")
+}
 
 var tps=0;
 

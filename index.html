@@ -27,9 +27,9 @@
         </div>-->
         <div class="container-fluid">
         <div class="row">
-        <div class="col-xs-0 col-sm-1 col-md-3"></div>
+        <div class="col-xs-0 col-sm-0 col-md-3"></div>
 
-        <div class="col-xs-12 col-sm-10 col-md-6 main">
+        <div class="col-xs-12 col-sm-12 col-md-6 main">
             <h3 id="title">PokeFame</h3>
             <div id="date"></div>            
 
@@ -40,7 +40,7 @@
             </div>
         </div>
 
-        <div class="col-xs-0 col-sm-1 col-md-3"></div>
+        <div class="col-xs-0 col-sm-0 col-md-3"></div>
         </div>
         <div clas="row">
             <div class="col-sm-4 footer">
@@ -87,7 +87,7 @@
                     var fixtime=indate.getUTCHours()+":"+indate.getUTCMinutes();
                     var fixdate=fixtime+" "+indate.getUTCDate()+"/"+(indate.getUTCMonth()+1)+"/"+indate.getUTCFullYear();
                     var dispdate="<div class=\"date\">Latest tweet: "+fixdate+"</div>";
-                    sorted[x]="<li class=\'list-group-item well-sm entry\'><a href=\"http://bulbapedia.bulbagarden.net/wiki/"+statset[x].name+"_(Pokemon)\">"+statset[x].name+"</a><span class=\"badge\">"+statset[x].count+"</span>"+dispdate+"</li>";
+                    sorted[x]="<li class=\'list-group-item well-sm entry\'>"+(x+1)+". <a href=\"http://bulbapedia.bulbagarden.net/wiki/"+statset[x].name+"_(Pokemon)\">"+statset[x].name+"</a><span class=\"badge\">"+statset[x].count+"</span>"+dispdate+"</li>";
                 };
                 //sorted="<button class=\'sort\' data-sort=\'name\'>Sort</button><ul class=\'list\'>"+sorted+"</ul>";
                 sorted="<ol class=\'list-group actuallist\'>"+sorted.join("")+"</ol>";

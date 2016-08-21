@@ -8,6 +8,7 @@ exports.names=function(callback){
     try{
         var data=JSON.parse(fs.readFileSync("./pokefiles/pokecache.json"));
         var result=arrayatise(data);
+
         callback(result);
         console.log("Loaded local cache...");
     }

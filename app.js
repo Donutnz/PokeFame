@@ -20,7 +20,6 @@ catch (err) {
 var users = [];
 io.on("connection", function (socket) {
     io.sockets.emit("setdate", strdate);
-    Object.getOwnPropertyNames(socket);
     console.log("User activity...");
     if (users.indexOf(socket.handshake.address) == -1) {
         users.push(socket.handshake.address);

@@ -1,4 +1,4 @@
-#title{
+.title{
     text-align:center;
     font-weight: bold;
     font-size: 24px;
@@ -24,4 +24,26 @@
     font-weight: lighter;
     font-style: italic;
     font-size: 12px;
+}
+.news0{
+    background-color:"#90ee90bf";
+}
+.news1{
+    background-color:"#f08080bf";
+}
+.news2{
+    background-color:"#add8e6bf";
+}
+.news3{
+    background-color:"#ffb6c1bf";
+}
+.news4{
+    background-color:"#ffff00bf";
+}
+.newsentry{
+    font-size: 16px;
+    text-align: center;
+}
+.maintitle{
+    font-size: 42px;
 }

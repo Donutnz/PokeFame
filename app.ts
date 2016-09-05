@@ -10,17 +10,37 @@ var fs=require("fs");
 var poke=require("./pokemon.js");
 
 var date=new Date();
-date=date.getUTCDate()+"/"+(date.getUTCMonth()+1)+"/"+date.getUTCFullYear();
+var strdate=date.getUTCDate()+"/"+(date.getUTCMonth()+1)+"/"+date.getUTCFullYear();
 
 app.use(express.static(__dirname+"/public"));
 
+try{
 app.get("/",function(req,res){
     res.sendFile(__dirname+"/index.html");
 });
+}
+catch(err){
+    console.log("HTML supply error: "+err);
+}
+
+
+var users=[]
 
 io.on("connection",function(socket){
-    console.log("A user connected");
-    io.sockets.emit("setdate",date);
+    io.sockets.emit("setdate",strdate);
+    
+    Object.getOwnPropertyNames(socket);
+    console.log("User activity...");
+    
+    if(users.indexOf(socket.handshake.address)==-1){
+        users.push(socket.handshake.address);
+    };
+    socket.on("disconnect",function(){
+        var addrpos=users.indexOf(socket.handshake.address);
+        users.splice(addrpos,1);
+        console.log("A user disconnected");
+    });
+    io.sockets.emit("currentusers",users.length);
 });
 
 http.listen(port,function(){
@@ -40,9 +60,12 @@ try{
     console.log("Found reg file");
 }
 catch(err){
+    /*
     var pokevaltemp=fs.readFileSync("./pokefiles/pokeregTEMPLATE.json");
     fs.writeFileSync("./pokefiles/pokereg.json",pokevaltemp);
     var pokeval=JSON.parse(fs.readFileSync("./pokefiles/pokereg.json"));
+    */
+    pokeval={};
     console.log("Made new reg file");
 }
 finally{
@@ -55,18 +78,32 @@ try{
     console.log("Found local ranks file...");
 }
 catch(err){
-    var ranks=[];
+    ranks=[];
     console.log("Had to make new ranks...");
 }
 finally{
     console.log("Loaded ranks...")
 }
 
+//Type ranks file loading
+try{
+    var typeranks=JSON.parse(fs.readFileSync("./pokefiles/poketyperanks.json"));
+    console.log("Found local type ranks...");
+}
+catch(err){
+    //typeranks=[];
+    console.log("Had to make new typeranks...");
+}
+finally{
+    console.log("Loaded type ranks...");
+}
+
+
 var tps=0;
 
 //Get poke names list, main stuff starts here
 
-poke.names(function(pokes){
+poke.names(function(pokes,pokedetails){
 
 var pokefilters={
     track:pokes
@@ -75,17 +112,21 @@ var pokefilters={
 var stream=T.stream("statuses/filter",pokefilters);
 
 stream.on("tweet",function(tweet){
+    //console.log("Details: "+pokedetails[2].types);
+
     for(var x=0;x<=pokes.length;x++){
         if(tweet.text.includes(pokes[x])){
             console.log("Pokeval: "+pokeval[pokes[x]]+" poke: "+pokes[x]);
 
             if(pokeval[pokes[x]]!=undefined){
                 pokeval[pokes[x]]+=1;
+                ranktypes(pokedetails[x]);
+
                 for(var z=0;z<ranks.length;z++){
                     if(ranks[z].name==pokes[x]){
                         break;
-                    }
-                }
+                    };
+                };
                 console.log("z val: "+z);
                 if(ranks[z]!=undefined){
                 console.log("Rank: "+ranks[z].name);
@@ -117,6 +158,7 @@ stream.on("tweet",function(tweet){
             }
             fs.writeFile("./pokefiles/pokereg.json",JSON.stringify(pokeval));
             fs.writeFile("./pokefiles/pokeranks.json",JSON.stringify(ranks));
+            fs.writeFile("./pokefiles/poketyperanks.json",JSON.stringify(typeranks));
         };
     };
     //io.sockets.emit("updte",ranks); //main info to html
@@ -124,13 +166,14 @@ stream.on("tweet",function(tweet){
     tps++;
     //console.log(tweet.user.screen_name);
     //console.log("---");
+    send();
     });
 });
 
-setInterval(send,2000);
+//setInterval(send,2000);
 
 function send(){
-    io.sockets.emit("updte",ranks);
+    io.sockets.emit("updte",ranks,typeranks);
     tps=0;
     /*rerank(ranks,function(checkedranks){
         io.sockets.emit("updte",checkedranks);
@@ -153,4 +196,28 @@ function rerank(sets,callback){ //probably will be used for recovery after loadi
     }
     callback(sets);
     console.log("\nDid a rerank.");
+};
+
+function ranktypes(indetails){
+    var pokedets=indetails.types;
+    var num=pokedets.length;
+
+    for(var t=0;t<num;t++){
+        var typename=pokedets[t].type.name;
+        try{
+        if(typeranks[typename]!=undefined){
+            typeranks[typename]+=1;
+            console.log("Type: "+typename);
+        }
+        else{
+            typeranks[typename]=1;
+            //typeranks.push({"type":typename,"count":1});
+        };
+        }
+        catch(err){
+            //typeranks.push({"type":typename,"count":1});
+            typeranks={};
+            console.log("Failed to update type ranks with error: "+err);
+        }
+    };
 };

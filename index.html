@@ -4,8 +4,8 @@
         <meta name="google-site-verification" content="qRGXWUHFdVABfXvDr3PpD0tJIhHhYae5G9Lbqf2OxGE">
         <meta content="width=device-width, inital-scale=1">
         <title>PokeFame</title>
-        <link rel="stylesheet" href="/style.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <link rel="stylesheet" href="/style.css">
     </head>
     <body>
 
@@ -25,28 +25,53 @@
                 </li>
             </ul>
         </div>-->
-        <div class="container-fluid">
-        <div class="row">
-        <div class="col-xs-0 col-sm-0 col-md-3"></div>
+        <div class="container-fluid"> <!--title div-->
+            <div class="row">
+                <div class="col-xs-0 col-md-3"></div>
+                    <div class="col-xs-12 col-md-6">
+                        <h3 class="title maintitle">PokeFame</h3>
+                        <div id="date"></div>
+                    </div>
+                <div class="col-xs-0 col-md-3"></div>
+            </div>
 
-        <div class="col-xs-12 col-sm-12 col-md-6 main">
-            <h3 id="title">PokeFame</h3>
-            <div id="date"></div>            
+        <div class="row">
+        <div class="col-xs-0 col-sm-0 col-md-0"></div>
+
+        <div class="col-xs-12 col-sm-12 col-md-6 main"> <!--The main ranking board-->
+            <!--<h3 id="title">PokeFame</h3>-->
+            <!--<div id="date"></div>-->
 
             <div id="pokelist">
-                <ol class='list-group'>
+                <ul class='list-group list'>
                     <li class='list-group-item'></li>
-                </ol>
+                </ul>
             </div>
         </div>
 
-        <div class="col-xs-0 col-sm-0 col-md-3"></div>
+        <div class="col-xs-0 col-sm-0 col-md-6">
+            <div id="ticker">
+                <h4 class="title">Latest In</h4>
+                <ol class="list-group">
+                    <li class="list-group-item well-sm"> </li>
+                    <li class="list-group-item well-sm"> </li>
+                    <li class="list-group-item well-sm"> </li>
+                    <li class="list-group-item well-sm"> </li>
+                    <li class="list-group-item well-sm"> </li>
+                </ol>
+            </div>
+        <!--</div>
+        <div class="col-xs-0 col-sm-0 col-md-3">-->
+            <h3 class="title">Types by Fame</h3>
+            <canvas id="typesChart" width="90%" height="90%"></canvas>
         </div>
+        </div>
+
         <div clas="row">
             <div class="col-sm-4 footer">
             This app is hosted on Microsoft Azure
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-4 footer userCount" style="text-align:center;">
             </div>
             <div class="col-sm-4 footer" style="text-align:right;">
             This app is created and maintained by Donutnz.
@@ -54,45 +79,150 @@
         </div>
         </div>
 
-        <script src="https://code.jquery.com/jquery-latest.min.js"></script>
         <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+        <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+        <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
         <!--<script src="/socket.io/socket.io.js"></script>-->
-        <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.2.0/list.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-        
-
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.14.1/moment.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.2.2/Chart.min.js"></script>
+        <script src="t.min.js"></script>
 
         <script>
             var socket=io();
+            var prevstats=[];
+            var firstRun=true;
+            var news=["","","","",""];
+            var newsplace=0;
             //var userList=new List("pokelist",{valueNames:["name","count"]});
 
-            socket.on("updte",function(stats){
+            
+            socket.on("updte",function(stats,types){
+                if(firstRun==true){
+                    prevstats=stats;
+                    chartifyTypes(types);
+                    firstRun=false;
+                };
+                //console.log("Types: "+types.);
+                //console.log("Type fire: "+types["fire"])
                 //$("#strm").append("; Name: "+tweet.user.screen_name);
                 //$("#twt").append("<br><br>Piece of wisdom: "+tweet.text);
                 //$("#twt").html("---<br>Name: "+tweet.user.screen_name+"<br>Post: "+tweet.text+"<br>Location: "+tweet.user.location+" / "+tweet.coordinates+" / "+tweet.place+"<br>");
                 //$("#statdisp").text(stats[0].name+"\n"+stats[1].name+"\n"+stats[2].name+"\n"+stats[3].name+"\n"+stats[4].name);
                 //$("#statdisp").html("1. "+stats[0].name+" - "+stats[0].count+"<br>2. "+stats[1].name+" - "+stats[1].count+"<br>3. "+stats[2].name+" - "+stats[2].count);
-                $("#pokelist").html(listify(stats));
+                $("#pokelist").html(listify(stats,prevstats));
+                prevstats=stats;
+                //$(".updated").effect("pulsate",{times:1});
+                $(".updated").effect("highlight",{color:"#00ff00"});
+                //$("#ticker").t();
+                //chartifyFame(stats);
+                //chartifyTypes(types);
             });
 
             socket.on("setdate",function(date){
                 $("#date").html("<p class=\"descriptor\">This is a simple app to show how often various Pokemon are mentioned on Twitter. Ranking and mention counts are totals since approximately "+date+" UTC.</p>");
-            })
+            });
 
-            function listify(statset){
+            function listify(statset,oldstats){
                 var sorted=[];
+                var entclass="";
+
                 for(var x=0;x<statset.length;x++){
                     //sorted[x]="<li><h3 class=\'name\'>"+statset[x].name+"</h3><p class=\'count\'>"+statset[x].count+"</p></li>";
                     var indate=new Date(statset[x].date);
                     var fixtime=indate.getUTCHours()+":"+indate.getUTCMinutes();
                     var fixdate=fixtime+" "+indate.getUTCDate()+"/"+(indate.getUTCMonth()+1)+"/"+indate.getUTCFullYear();
                     var dispdate="<div class=\"date\">Latest tweet: "+fixdate+"</div>";
-                    sorted[x]="<li class=\'list-group-item well-sm entry\'>"+(x+1)+". <a href=\"http://bulbapedia.bulbagarden.net/wiki/"+statset[x].name+"_(Pokemon)\">"+statset[x].name+"</a><span class=\"badge\">"+statset[x].count+"</span>"+dispdate+"</li>";
+                    
+                    if(oldstats[x]==undefined){ //fixes an issue where oldstats wouldn't be written to and would cause crash
+                        firstRun=true;
+                        continue;
+                    };
+
+                    if(oldstats[x].count!=statset[x].count){
+                        entclass="class=\'list-group-item well-sm entry updated\'";
+                        
+                        newsplace++;
+                        if(newsplace>=5){
+                            newsplace=0;
+                        };
+
+                        news.splice(4,1);
+                        news.splice(0,0,"<li class=\'list-group-item well-sm news"+newsplace+" newsentry\'>"+statset[x].name+"</li>");
+                        //news.push(statset[x].name+"\n");
+                        //news.pop();
+                    }
+                    else{
+                        entclass="class=\'list-group-item well-sm entry\'";
+                    };
+                    sorted[x]="<li "+entclass+" id=\'"+statset[x].name+"\'>"+(x+1)+". <a href=\"http://bulbapedia.bulbagarden.net/wiki/"+statset[x].name+"_(Pokemon)\">"+statset[x].name+"</a><span class=\"badge\">"+statset[x].count+"</span>"+dispdate+"</li>";
                 };
                 //sorted="<button class=\'sort\' data-sort=\'name\'>Sort</button><ul class=\'list\'>"+sorted+"</ul>";
+                $("#ticker").html("<h4 class=\'title\'>Latest In</h4> <ol class=\'list-group\'>"+news.join("")+"</ol>");
                 sorted="<ol class=\'list-group actuallist\'>"+sorted.join("")+"</ol>";
+                //$(".news"+newsplace).t();
                 return sorted;
-            }
+            };
+
+            function chartifyTypes(types){
+                var ctx=$("#typesChart");
+                var typenames=[];
+                var typedata=[];
+
+                for(var key in types){
+                    //console.log("Key "+key)
+                    typenames.push(key.toUpperCase());
+                    typedata.push(types[key]);
+                };
+
+                //console.log("Type names: "+typenames.length+" data: "+typedata);
+                //Variables for the actual chart
+                var data={
+                    labels:typenames,
+                    datasets:[
+                        {
+                            label: "Types Spread by Fame",
+                            backgroundColor: "rgba(255,99,132,0.2)",
+                            borderColor: "rgba(255,99,132,1)",
+                            pointBackgroundColor: "rgba(255,99,132,1)",
+                            pointBorderColor: "#fff",
+                            pointHoverBackgroundColor: "#fff",
+                            pointHoverBorderColor: "rgba(255,99,132,1)",
+                            data:typedata
+                        }
+                    ]
+                };
+
+                var options={
+                    scales:{
+                        type: "radialLinear"
+                    }
+                };
+
+                var chartOptions={
+                    type:"radar",
+                    data:data,
+                    options: options
+                };
+
+                var chart=new Chart(ctx,chartOptions);
+            };
+            </script>
+
+            <script> //shows how many users are currently viewing the page
+                var socket=io();
+
+                socket.on("currentusers",function(users){
+                    $(".userCount").html("Concurrent users: "+users);
+                    console.log("Users: "+users);
+                });
+            </script>
+
+            <script>
+                /*$.getJSON("/pokemondetails/abra.json",function(data){
+                    console.log("Poke details name: "+data.name);
+                });*/
+                //$(".title").t();
             </script>
 
             <script type="text/javascript">  var appInsights=window.appInsights||function(config){    function r(config){t[config]=function(){var i=arguments;t.queue.push(function(){t[config].apply(t,i)})}}var t={config:config},u=document,e=window,o="script",s=u.createElement(o),i,f;s.src=config.url||"//az416426.vo.msecnd.net/scripts/a/ai.0.js";u.getElementsByTagName(o)[0].parentNode.appendChild(s);try{t.cookie=u.cookie}catch(h){}for(t.queue=[],i=["Event","Exception","Metric","PageView","Trace","Dependency"];i.length;)r("track"+i.pop());return r("setAuthenticatedUserContext"),r("clearAuthenticatedUserContext"),config.disableExceptionTracking||(i="onerror",r("_"+i),f=e[i],e[i]=function(config,r,u,e,o){var s=f&&f(config,r,u,e,o);return s!==!0&&t["_"+i](config,r,u,e,o),s}),t    }({        instrumentationKey:"216160d3-ac8a-4321-a8f9-89684b5a7a7e"    });           window.appInsights=appInsights;    appInsights.trackPageView();</script>
